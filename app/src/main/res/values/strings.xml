@@ -12,5 +12,6 @@
 
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
+    <string name="title_notification">通知</string>
     <string name="title_user">我</string>
 </resources>
