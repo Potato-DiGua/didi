@@ -19,8 +19,10 @@
         android:layout_marginTop="96dp"
         android:layout_marginEnd="24dp"
 
-        android:hint="@string/prompt_email"
-        android:inputType="textEmailAddress"
+        android:drawablePadding="3dp"
+        android:drawableStart="@drawable/account"
+        android:hint="@string/prompt_account"
+        android:inputType="phone"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,6 +36,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
 
+        android:drawablePadding="3dp"
+        android:drawableStart="@drawable/password"
         android:hint="@string/prompt_password"
         android:imeActionLabel="@string/action_sign_in_short"
         android:imeOptions="actionDone"
