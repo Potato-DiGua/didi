@@ -9,7 +9,14 @@ import java.io.IOException;
  */
 public class LoginDataSource {
 
-    public Result<LoggedInUser> login(String username, String password) {
+    /**
+     *
+     * @param account
+     * @param password
+     * @param type 1代表货主，2代表司机
+     * @return
+     */
+    public Result<LoggedInUser> login(String account, String password,int type) {
 
         try {
             // TODO: handle loggedInUser authentication

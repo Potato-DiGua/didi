@@ -1,15 +1,15 @@
 package com.example.didi.ui.login;
 
+import android.util.Patterns;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import android.util.Patterns;
-
+import com.example.didi.R;
 import com.example.didi.data.LoginRepository;
 import com.example.didi.data.Result;
 import com.example.didi.data.model.LoggedInUser;
-import com.example.didi.R;
 
 public class LoginViewModel extends ViewModel {
 
@@ -29,23 +29,26 @@ public class LoginViewModel extends ViewModel {
         return loginResult;
     }
 
-    public void login(String username, String password) {
+    public void login(final String account, final String password,final int type) {
         // can be launched in a separate asynchronous job
-        new Thread(()->{
-            Result<LoggedInUser> result = loginRepository.login(username, password);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Result<LoggedInUser> result = loginRepository.login(account, password,type);
 
-            if (result instanceof Result.Success) {
-                LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
-                loginResult.postValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
-            } else {
-                loginResult.postValue(new LoginResult(R.string.login_failed));
+                if (result instanceof Result.Success) {
+                    LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
+                    loginResult.postValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
+                } else {
+                    loginResult.postValue(new LoginResult(R.string.login_failed));
+                }
             }
         }).start();
     }
 
-    public void loginDataChanged(String username, String password) {
-        if (!isUserNameValid(username)) {
-            loginFormState.setValue(new LoginFormState(R.string.invalid_username, null));
+    public void loginDataChanged(String account, String password) {
+        if (!isAccountValid(account)) {
+            loginFormState.setValue(new LoginFormState(R.string.invalid_account, null));
         } else if (!isPasswordValid(password)) {
             loginFormState.setValue(new LoginFormState(null, R.string.invalid_password));
         } else {
@@ -54,11 +57,11 @@ public class LoginViewModel extends ViewModel {
     }
 
     // 检查邮箱是否有效
-    private boolean isUserNameValid(String username) {
-        if (username == null||username.trim().isEmpty()) {
+    private boolean isAccountValid(String account) {
+        if (account == null||account.trim().isEmpty()) {
             return false;
         }
-        return Patterns.PHONE.matcher(username).matches();
+        return Patterns.PHONE.matcher(account).matches();
     }
 
     /**

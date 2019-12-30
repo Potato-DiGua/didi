@@ -1,14 +1,22 @@
 <resources>
     <string name="app_name">滴滴物流</string>
+
+<!--    login-->
     <string name="title_activity_login">登录</string>
     <string name="prompt_account">请输入手机号</string>
     <string name="prompt_password">请输入密码</string>
     <string name="action_sign_in">登录</string>
     <string name="action_sign_in_short">登录</string>
     <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">手机号不合法</string>
+    <string name="invalid_account">手机号不合法</string>
     <string name="invalid_password">密码长度为8&#8211;16个字符必须包含字母和数字</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="radio_btn_owner">货主</string>
+    <string name="radio_btn_driver">货车司机</string>
+    <string name="action_register">注册</string>
+
+<!--    register-->
+    <string name="prompt_nick_name">请输入昵称</string>
 
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
