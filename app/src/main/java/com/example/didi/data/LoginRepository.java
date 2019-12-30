@@ -3,8 +3,8 @@ package com.example.didi.data;
 import com.example.didi.data.model.LoggedInUser;
 
 /**
- * Class that requests authentication and user information from the remote data source and
- * maintains an in-memory cache of login status and user credentials information.
+ * 该类从服务器请求身份验证和用户信息，并维护登录状态和用户凭据信息的内存缓存。
+ *
  */
 public class LoginRepository {
 
@@ -16,12 +16,10 @@ public class LoginRepository {
     // @see https://developer.android.com/training/articles/keystore
     private LoggedInUser user = null;
 
-    // private constructor : singleton access
+    //单例 懒汉模式
     private LoginRepository(LoginDataSource dataSource) {
         this.dataSource = dataSource;
     }
-
-    //单例模式
     public static LoginRepository getInstance(LoginDataSource dataSource) {
         if (instance == null) {
             instance = new LoginRepository(dataSource);

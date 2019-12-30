@@ -2,9 +2,12 @@ package com.example.didi.ui.login;
 
 import android.app.Activity;
 
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -22,9 +25,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.didi.MainActivity;
 import com.example.didi.R;
-import com.example.didi.ui.login.LoginViewModel;
-import com.example.didi.ui.login.LoginViewModelFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -39,6 +41,15 @@ public class LoginActivity extends AppCompatActivity {
 
         final EditText usernameEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
+        Drawable drawable = ContextCompat.getDrawable(this,R.drawable.account);
+        drawable.setBounds(0, 0, 50, 50);//第一0是距左边距离，第二0是距上边距离，50分别是长宽
+        usernameEditText.setCompoundDrawables(drawable, null, null, null);
+
+        drawable = ContextCompat.getDrawable(this,R.drawable.password);
+        drawable.setBounds(0, 0, 50, 50);
+        passwordEditText.setCompoundDrawables(drawable, null, null, null);
+
+
         final Button loginButton = findViewById(R.id.login);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
 
@@ -73,11 +84,13 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 setResult(Activity.RESULT_OK);
 
-                //Complete and destroy login activity once successful
+                //登录完成 跳转主界面
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 finish();
             }
         });
 
+        //监听文本变化
         TextWatcher afterTextChangedListener = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -101,6 +114,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                //软键盘点击回车登录
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     loginViewModel.login(usernameEditText.getText().toString(),
                             passwordEditText.getText().toString());

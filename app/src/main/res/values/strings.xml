@@ -1,12 +1,17 @@
 <resources>
-    <string name="app_name">didi</string>
-    <string name="title_activity_login">Sign in</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
+    <string name="app_name">滴滴物流</string>
+    <string name="title_activity_login">登录</string>
+    <string name="prompt_account">请输入手机号</string>
+    <string name="prompt_password">请输入密码</string>
     <string name="action_sign_in">登录</string>
-    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_sign_in_short">登录</string>
     <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">邮箱不合法</string>
+    <string name="invalid_username">手机号不合法</string>
     <string name="invalid_password">密码长度为8&#8211;16个字符必须包含字母和数字</string>
     <string name="login_failed">"Login failed"</string>
+
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notification">通知</string>
+    <string name="title_user">我</string>
 </resources>

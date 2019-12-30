@@ -3,7 +3,7 @@ package com.example.didi.ui.login;
 import androidx.annotation.Nullable;
 
 /**
- * Data validation state of the login form.
+ * 登录表单的状态
  */
 class LoginFormState {
     @Nullable

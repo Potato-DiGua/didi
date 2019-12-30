@@ -31,14 +31,16 @@ public class LoginViewModel extends ViewModel {
 
     public void login(String username, String password) {
         // can be launched in a separate asynchronous job
-        Result<LoggedInUser> result = loginRepository.login(username, password);
+        new Thread(()->{
+            Result<LoggedInUser> result = loginRepository.login(username, password);
 
-        if (result instanceof Result.Success) {
-            LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
-            loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
-        } else {
-            loginResult.setValue(new LoginResult(R.string.login_failed));
-        }
+            if (result instanceof Result.Success) {
+                LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
+                loginResult.postValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
+            } else {
+                loginResult.postValue(new LoginResult(R.string.login_failed));
+            }
+        }).start();
     }
 
     public void loginDataChanged(String username, String password) {
@@ -56,15 +58,20 @@ public class LoginViewModel extends ViewModel {
         if (username == null||username.trim().isEmpty()) {
             return false;
         }
-        return Patterns.EMAIL_ADDRESS.matcher(username).matches();
+        return Patterns.PHONE.matcher(username).matches();
     }
 
-    // 检查密码是否有效
+    /**
+     * 检查密码是否为8-16位并且包含数字和字母
+     * @param password
+     * @return
+     */
     private boolean isPasswordValid(String password) {
 
         if(password==null)
             return false;
         int length=password.length();
+
         if(length>=8&&length<=16)
         {
             boolean hasNum=false,hasChar=false;
@@ -82,7 +89,6 @@ public class LoginViewModel extends ViewModel {
                 if(hasChar&&hasNum)
                     return true;
             }
-            return false;
         }
         return false;
     }
