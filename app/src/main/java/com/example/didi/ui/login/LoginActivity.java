@@ -2,7 +2,6 @@ package com.example.didi.ui.login;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,7 +18,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -41,17 +39,11 @@ public class LoginActivity extends AppCompatActivity {
 
         final EditText accountEditText = findViewById(R.id.account);
         final EditText passwordEditText = findViewById(R.id.password);
-        Drawable drawable = ContextCompat.getDrawable(this,R.drawable.account);
-        drawable.setBounds(0, 0, 50, 50);//第一0是距左边距离，第二0是距上边距离，50分别是长宽
-        accountEditText.setCompoundDrawables(drawable, null, null, null);
 
-        drawable = ContextCompat.getDrawable(this,R.drawable.password);
-        drawable.setBounds(0, 0, 50, 50);
-        passwordEditText.setCompoundDrawables(drawable, null, null, null);
 
 
         final Button loginButton = findViewById(R.id.btn_login);
-        final Button registerButton=findViewById(R.id.btn_register);
+        final Button registerButton = findViewById(R.id.btn_register);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
@@ -109,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                         passwordEditText.getText().toString());
             }
         };
-        mRadioGroup=findViewById(R.id.radio_group);
+        mRadioGroup = findViewById(R.id.radio_group);
         accountEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -143,13 +135,14 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+
     /**
      * 获取选中的单选按钮的序号 1为货主，2为司机
+     *
      * @return
      */
-    private int getCheckedIndex()
-    {
-        return mRadioGroup.getCheckedRadioButtonId()==R.id.radio_btn_owner?1:2;
+    private int getCheckedIndex() {
+        return mRadioGroup.getCheckedRadioButtonId() == R.id.radio_btn_owner ? 1 : 2;
     }
 
     private void updateUiWithUser(LoggedInUserView model) {

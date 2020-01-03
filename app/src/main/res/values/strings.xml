@@ -17,6 +17,8 @@
 
 <!--    register-->
     <string name="prompt_nick_name">请输入昵称</string>
+    <string name="title_activity_register">注册</string>
+    <string name="invalid_nick_name">昵称不合法,必须为2-16个字符,不能包含空格和特殊字符</string>
 
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
