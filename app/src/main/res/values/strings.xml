@@ -19,8 +19,14 @@
     <string name="prompt_nick_name">请输入昵称</string>
     <string name="title_activity_register">注册</string>
     <string name="invalid_nick_name">昵称不合法,必须为2-16个字符,不能包含空格和特殊字符</string>
+<!--user-->
+    <string name="account">账号:</string>
+    <string name="nick_name">昵称:</string>
+    <string name="sex">性别:</string>
+    <string name="phone">手机:</string>
+    <string name="logout">注销</string>
 
-    <string name="title_home">Home</string>
+    <string name="title_home">主页</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notification">通知</string>
     <string name="title_user">我</string>

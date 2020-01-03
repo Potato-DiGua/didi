@@ -1,6 +1,6 @@
 package com.example.didi;
 
-import com.example.didi.beans.RegisterBeans;
+import com.example.didi.beans.RegisterBean;
 import com.example.didi.utils.HttpUtils;
 import com.google.gson.Gson;
 
@@ -25,7 +25,7 @@ public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
         Gson gson=new Gson();
-        RegisterBeans registerBeans=new RegisterBeans();
+        RegisterBean registerBeans=new RegisterBean();
         registerBeans.setPhone("15227591135");
         registerBeans.setNickName("zzl");
         registerBeans.setPwd("zzl1234");

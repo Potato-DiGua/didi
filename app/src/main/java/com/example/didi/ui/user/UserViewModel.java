@@ -4,16 +4,21 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.didi.beans.UserInfoBean;
+
 public class UserViewModel extends ViewModel {
 
-    private MutableLiveData<String> mText;
+    private MutableLiveData<UserInfoBean> mUser;
 
     public UserViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is notifications fragment");
+        mUser = new MutableLiveData<>();
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public void setUser(UserInfoBean userInfoBean){
+        mUser.postValue(userInfoBean);
     }
+    public LiveData<UserInfoBean> getUser() {
+        return mUser;
+    }
+
 }

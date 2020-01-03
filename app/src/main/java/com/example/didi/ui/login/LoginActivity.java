@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,7 +24,10 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.didi.MainActivity;
 import com.example.didi.R;
+import com.example.didi.beans.LoginBean;
+import com.example.didi.beans.UserInfoBean;
 import com.example.didi.ui.register.RegisterActivity;
+import com.example.didi.utils.Utils;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -62,24 +66,28 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        loginViewModel.getLoginResult().observe(this, new Observer<LoginResult>() {
+        loginViewModel.getLoginResult().observe(this, new Observer<Boolean>() {
             @Override
-            public void onChanged(@Nullable LoginResult loginResult) {
-                if (loginResult == null) {
+            public void onChanged(Boolean result) {
+                if (result == null) {
                     return;
                 }
                 loadingProgressBar.setVisibility(View.GONE);
-                if (loginResult.getError() != null) {
-                    showLoginFailed(loginResult.getError());
-                }
-                if (loginResult.getSuccess() != null) {
-                    updateUiWithUser(loginResult.getSuccess());
-                }
-                setResult(Activity.RESULT_OK);
 
-                //登录完成 跳转主界面
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                finish();
+                if (result) {
+                    Intent intent=new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    if(!TextUtils.isEmpty(accountEditText.getText().toString()))
+                    {
+                        Utils.saveUser(LoginActivity.this,new LoginBean(accountEditText.getText().toString(),
+                                passwordEditText.getText().toString(),
+                                getCheckedIndex()));
+                    }
+                    setResult(Activity.RESULT_OK);
+                    finish();
+                }
+
+
             }
         });
 
@@ -133,23 +141,29 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
             }
         });
+
+        quickLogin();
+    }
+    private void quickLogin()
+    {
+        LoginBean loginBean=Utils.loadUser(this);
+        if(loginBean!=null)
+        {
+            loginViewModel.login(loginBean.getPhone(),
+                    loginBean.getPwd(),
+                    loginBean.getType());
+        }
     }
 
-
     /**
-     * 获取选中的单选按钮的序号 1为货主，2为司机
+     * 获取选中的单选按钮的序号 0为货主，1为司机
      *
      * @return
      */
     private int getCheckedIndex() {
-        return mRadioGroup.getCheckedRadioButtonId() == R.id.radio_btn_owner ? 1 : 2;
+        return mRadioGroup.getCheckedRadioButtonId() == R.id.radio_btn_owner ? 0 : 1;
     }
 
-    private void updateUiWithUser(LoggedInUserView model) {
-        String welcome = getString(R.string.welcome) + model.getDisplayName();
-        // TODO : initiate successful logged in experience
-        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
-    }
 
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();

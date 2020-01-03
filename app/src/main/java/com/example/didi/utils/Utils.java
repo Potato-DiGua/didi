@@ -1,5 +1,11 @@
 package com.example.didi.utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.example.didi.beans.LoginBean;
+import com.example.didi.ui.login.LoginViewModel;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -83,6 +89,45 @@ public class Utils {
             }
         }
         return "";
+    }
+    public static void removeUser(Context context)
+    {
+        SharedPreferences sharedPreferences= context.getSharedPreferences("data",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.remove("account");
+        editor.remove("pwd");
+        editor.remove("type");
+
+        editor.apply();
+    }
+    public static void saveUser(Context context, LoginBean loginBean)
+    {
+        SharedPreferences sharedPreferences= context.getSharedPreferences("data",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString("account", loginBean.getPhone());
+        editor.putString("pwd", loginBean.getPwd());
+        editor.putInt("type",loginBean.getType());
+        //步骤4：提交
+        editor.apply();
+    }
+    public static LoginBean loadUser(Context context)
+    {
+        SharedPreferences sharedPreferences= context.getSharedPreferences("data",Context.MODE_PRIVATE);
+        LoginBean loginBean=null;
+        String phone=sharedPreferences.getString("account","");
+        String pwd=sharedPreferences.getString("pwd","");
+        int type=sharedPreferences.getInt("type",-1);
+        if(!phone.isEmpty()&&!pwd.isEmpty()&&type!=-1)
+        {
+            loginBean=new LoginBean();
+            loginBean.setPhone(phone);
+            loginBean.setPwd(pwd);
+            loginBean.setType(type);
+        }
+
+        return loginBean;
 
     }
 }

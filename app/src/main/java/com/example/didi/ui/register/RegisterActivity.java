@@ -18,8 +18,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.didi.R;
-import com.example.didi.beans.RegisterBeans;
-import com.example.didi.beans.Result;
+import com.example.didi.beans.RegisterBean;
+import com.example.didi.beans.SendBean;
 import com.example.didi.utils.HttpUtils;
 import com.example.didi.utils.Utils;
 import com.google.gson.Gson;
@@ -103,14 +103,14 @@ public class RegisterActivity extends AppCompatActivity {
         accountEditText.addTextChangedListener(textWatcher);
         pwdEditText.addTextChangedListener(textWatcher);
         Gson gson = new Gson();
-        Type jsonType = new TypeToken<Result<Boolean>>() {
+        Type jsonType = new TypeToken<SendBean<Boolean>>() {
         }.getType();
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 setLoading(true);
 
-                RegisterBeans registerBeans = new RegisterBeans();
+                RegisterBean registerBeans = new RegisterBean();
                 registerBeans.setPhone(accountEditText.getText().toString());
                 registerBeans.setNickName(nickNameEditText.getText().toString());
                 registerBeans.setPwd(pwdEditText.getText().toString());
@@ -144,18 +144,18 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                             String json = response.body().string();
-                            Result<Boolean> result = gson.fromJson(json, jsonType);
+                            SendBean<Boolean> sendBeans = gson.fromJson(json, jsonType);
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (result.getStatus().equals("ok")) {
-                                        if (result.getData()) {
+                                    if (sendBeans.getStatus().equals("ok")) {
+                                        if (sendBeans.getData()) {
                                             finish();
                                         } else {
-                                            Toast.makeText(RegisterActivity.this, result.getMsg(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(RegisterActivity.this, sendBeans.getMsg(), Toast.LENGTH_SHORT).show();
                                         }
                                     } else {
-                                        Toast.makeText(RegisterActivity.this, result.getMsg(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(RegisterActivity.this, sendBeans.getMsg(), Toast.LENGTH_SHORT).show();
                                     }
                                     setLoading(false);
                                 }

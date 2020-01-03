@@ -1,6 +1,7 @@
 package com.example.didi.beans;
 
-public class LoginBeans {
+public class RegisterBean {
+    private String nickName;
     private String phone;
     private String pwd;
     private int type;
@@ -11,6 +12,14 @@ public class LoginBeans {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public String getPhone() {

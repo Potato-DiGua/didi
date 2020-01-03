@@ -5,15 +5,15 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.didi.R;
+import com.example.didi.beans.UserInfoBean;
 import com.example.didi.utils.Utils;
 import com.example.didi.data.LoginRepository;
 import com.example.didi.data.Result;
-import com.example.didi.data.model.LoggedInUser;
 
 public class LoginViewModel extends ViewModel {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
-    private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
+    private MutableLiveData<Boolean> loginResult = new MutableLiveData<>();
     private LoginRepository loginRepository;
 
     LoginViewModel(LoginRepository loginRepository) {
@@ -24,7 +24,7 @@ public class LoginViewModel extends ViewModel {
         return loginFormState;
     }
 
-    LiveData<LoginResult> getLoginResult() {
+    LiveData<Boolean> getLoginResult() {
         return loginResult;
     }
 
@@ -33,14 +33,9 @@ public class LoginViewModel extends ViewModel {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Result<LoggedInUser> result = loginRepository.login(account, password,type);
+                boolean result = loginRepository.login(account, password,type);
 
-                if (result instanceof Result.Success) {
-                    LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
-                    loginResult.postValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
-                } else {
-                    loginResult.postValue(new LoginResult(R.string.login_failed));
-                }
+                loginResult.postValue(result);
             }
         }).start();
     }

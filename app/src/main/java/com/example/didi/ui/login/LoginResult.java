@@ -1,31 +1,24 @@
 package com.example.didi.ui.login;
 
-import androidx.annotation.Nullable;
+import com.example.didi.beans.UserInfoBean;
 
-/**
- * Authentication result : success (user details) or error message.
- */
-class LoginResult {
-    @Nullable
-    private LoggedInUserView success;
-    @Nullable
-    private Integer error;
+public class LoginResult {
+    private Boolean success;
+    private String Error;
 
-    LoginResult(@Nullable Integer error) {
-        this.error = error;
-    }
-
-    LoginResult(@Nullable LoggedInUserView success) {
-        this.success = success;
-    }
-
-    @Nullable
-    LoggedInUserView getSuccess() {
+    public Boolean getSuccess() {
         return success;
     }
 
-    @Nullable
-    Integer getError() {
-        return error;
+    public void setSuccess(Boolean success) {
+        this.success = success;
+    }
+
+    public String getError() {
+        return Error;
+    }
+
+    public void setError(String error) {
+        Error = error;
     }
 }

@@ -1,6 +1,9 @@
 package com.example.didi.data;
 
-import com.example.didi.data.model.LoggedInUser;
+import android.content.Context;
+
+import com.example.didi.beans.UserInfoBean;
+import com.example.didi.utils.Utils;
 
 /**
  * 该类从服务器请求身份验证和用户信息，并维护登录状态和用户凭据信息的内存缓存。
@@ -12,42 +15,45 @@ public class LoginRepository {
 
     private LoginDataSource dataSource;
 
-    // If user credentials will be cached in local storage, it is recommended it be encrypted
-    // @see https://developer.android.com/training/articles/keystore
-    private LoggedInUser user = null;
 
     //单例 懒汉模式
-    private LoginRepository(LoginDataSource dataSource) {
-        this.dataSource = dataSource;
+    private LoginRepository() {
+        this.dataSource = new LoginDataSource();
     }
-    public static LoginRepository getInstance(LoginDataSource dataSource) {
+    public static LoginRepository getInstance() {
         if (instance == null) {
-            instance = new LoginRepository(dataSource);
+            instance = new LoginRepository();
         }
         return instance;
     }
 
     public boolean isLoggedIn() {
-        return user != null;
+        return DataShare.getUser() != null;
     }
 
-    public void logout() {
-        user = null;
-        dataSource.logout();
+    public boolean logout(Context context) {
+        if (dataSource.logout()) {
+            DataShare.setUser(null);
+            Utils.removeUser(context);
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    private void setLoggedInUser(LoggedInUser user) {
-        this.user = user;
+    private void setLoggedInUser(UserInfoBean user) {
+        DataShare.setUser(user);
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
     }
 
-    public Result<LoggedInUser> login(String account, String password,int type) {
+    public boolean login(String account, String password, int type) {
         // handle login
-        Result<LoggedInUser> result = dataSource.login(account, password,type);
+        Result<UserInfoBean> result = dataSource.login(account, password,type);
         if (result instanceof Result.Success) {
-            setLoggedInUser(((Result.Success<LoggedInUser>) result).getData());
+            setLoggedInUser(((Result.Success<UserInfoBean>) result).getData());
+            return true;
         }
-        return result;
+        return false;
     }
 }

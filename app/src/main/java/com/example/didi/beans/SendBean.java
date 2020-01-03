@@ -1,6 +1,6 @@
 package com.example.didi.beans;
 
-public class Result <T>{
+public class SendBean<T>{
     private String status;
     private String msg;
     private T data;
