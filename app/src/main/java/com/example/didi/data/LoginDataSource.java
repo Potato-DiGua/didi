@@ -6,18 +6,12 @@ import android.util.Log;
 import com.example.didi.beans.LoginBean;
 import com.example.didi.beans.SendBean;
 import com.example.didi.beans.UserInfoBean;
-import com.example.didi.ui.login.LoginActivity;
 import com.example.didi.utils.HttpUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -79,6 +73,27 @@ public class LoginDataSource {
         // TODO: revoke authentication
         OkHttpClient okHttpClient = HttpUtils.getOkHttpClient();
         Request request = new Request.Builder().url(HttpUtils.BASE_URL + "/logout").build();
+
+        try {
+            Response response=okHttpClient.newCall(request).execute();
+            String json = response.body().string();
+            Log.d("logout",json);
+            if (!json.isEmpty()) {
+                Gson gson = new Gson();
+                SendBean<Boolean> sendBean = gson.fromJson(json,new TypeToken<SendBean<Boolean>>(){}.getType());
+                if(sendBean.getStatus().equals("ok"))
+                {
+                    return sendBean.getData();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public boolean isLoggedIn(){
+        OkHttpClient okHttpClient = HttpUtils.getOkHttpClient();
+        Request request = new Request.Builder().url(HttpUtils.BASE_URL + "/islogin").build();
 
         try {
             Response response=okHttpClient.newCall(request).execute();

@@ -28,7 +28,7 @@ public class LoginRepository {
     }
 
     public boolean isLoggedIn() {
-        return DataShare.getUser() != null;
+        return DataShare.getUser() != null&&dataSource.isLoggedIn();
     }
 
     public boolean logout(Context context) {

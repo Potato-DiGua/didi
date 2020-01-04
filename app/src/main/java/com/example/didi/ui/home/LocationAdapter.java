@@ -3,7 +3,6 @@ package com.example.didi.ui.home;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,11 +12,18 @@ import com.example.didi.R;
 
 import java.util.List;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.MyViewHolder> {
     private List<String> mList;
-    private Button clickButton=null;
-    public MyAdapter(List<String> list) {
+    public LocationAdapter(List<String> list) {
         mList = list;
+    }
+
+    public List<String> getList() {
+        return mList;
+    }
+
+    public void setList(List<String> mList) {
+        this.mList = mList;
     }
 
     @NonNull
@@ -32,38 +38,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         View view=holder.itemView;
         TextView textView=view.findViewById(R.id.textView);
         textView.setText(mList.get(position));
-        Button button=view.findViewById(R.id.btn_add);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(clickButton!=null)
-                {
-                    clickButton.setVisibility(View.INVISIBLE);
-                    if(clickButton==button)
-                    {
-                        clickButton=null;
-                        return;
-                    }
 
-                }
-                button.setVisibility(View.VISIBLE);
-                clickButton=button;
-            }
-        });
-
-    }
-    public void removeBtn()
-    {
-        if(clickButton!=null)
-        {
-            clickButton.setVisibility(View.INVISIBLE);
-        }
-        clickButton=null;
     }
 
     @Override
     public int getItemCount() {
-        return mList.size();
+        return mList==null?0:mList.size();
     }
     public class MyViewHolder extends RecyclerView.ViewHolder{
         public MyViewHolder(@NonNull View itemView) {

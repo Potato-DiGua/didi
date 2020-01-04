@@ -5,6 +5,15 @@ public class UserInfoBean {
     private String phone;
     private String nickName;
     private String sex;
+    private int type;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public int getId() {
         return id;

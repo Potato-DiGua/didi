@@ -3,6 +3,7 @@ package com.example.didi.ui.login;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -25,7 +26,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.didi.MainActivity;
 import com.example.didi.R;
 import com.example.didi.beans.LoginBean;
-import com.example.didi.beans.UserInfoBean;
+import com.example.didi.data.LoginRepository;
 import com.example.didi.ui.register.RegisterActivity;
 import com.example.didi.utils.Utils;
 
@@ -33,7 +34,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
     private RadioGroup mRadioGroup;
+    private EditText accountEditText;
+    private EditText passwordEditText;
 
+    private Handler mHandler=new Handler();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +45,8 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
 
-        final EditText accountEditText = findViewById(R.id.account);
-        final EditText passwordEditText = findViewById(R.id.password);
+        accountEditText = findViewById(R.id.account);
+        passwordEditText = findViewById(R.id.password);
 
 
 
@@ -146,13 +150,39 @@ public class LoginActivity extends AppCompatActivity {
     }
     private void quickLogin()
     {
-        LoginBean loginBean=Utils.loadUser(this);
-        if(loginBean!=null)
-        {
-            loginViewModel.login(loginBean.getPhone(),
-                    loginBean.getPwd(),
-                    loginBean.getType());
-        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(LoginRepository.getInstance().isLoggedIn())
+                {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent intent=new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+
+                }else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            LoginBean loginBean=Utils.loadUser(LoginActivity.this);
+                            if(loginBean!=null)
+                            {
+                                accountEditText.setText(loginBean.getPhone());
+                                passwordEditText.setText(loginBean.getPwd());
+                                mRadioGroup.check(loginBean.getType()==0?R.id.radio_btn_owner:R.id.radio_btn_driver);
+                            }
+                        }
+                    });
+
+                }
+            }
+        }).start();
+
     }
 
     /**
