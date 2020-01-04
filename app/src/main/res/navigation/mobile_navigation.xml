@@ -10,19 +10,11 @@
         android:name="com.example.didi.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home_driver" />
-
-    <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.didi.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
-
-
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.didi.ui.notifications.NotificationsFragment"
+        android:label="@string/title_notification"
         tools:layout="@layout/fragment_notifications" />
-
     <fragment
         android:id="@+id/navigation_user"
         android:name="com.example.didi.ui.user.UserFragment"

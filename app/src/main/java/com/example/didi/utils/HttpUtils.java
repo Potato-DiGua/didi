@@ -21,7 +21,7 @@ import okhttp3.OkHttpClient;
 public class HttpUtils {
     public static final MediaType JSON
             = MediaType.get("application/json; charset=utf-8");
-    public static final String BASE_URL = "http://192.168.43.251:8080";
+    public static final String BASE_URL = "http://192.168.50.78:8080";
     private static CookieJar cookieJar = new CookieJar() {
         public final Map<String, List<Cookie>> cookieStore = new HashMap<>();
 

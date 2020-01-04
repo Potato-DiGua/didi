@@ -1,6 +1,5 @@
 package com.example.didi.ui.home;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +9,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +22,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.didi.R;
+import com.example.didi.beans.SearchBean;
+import com.example.didi.beans.UserInfoBean;
 import com.example.didi.data.DataShare;
 import com.example.didi.ui.edit.EditActivity;
 
@@ -33,6 +36,7 @@ public class HomeFragment extends Fragment {
     private HomeViewModel homeViewModel;
     private RecyclerView mRecyclerView;
     private LocationAdapter mLocationAdapter;
+    private DriverAdapter mDriverAdapter;
     private int mType;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -45,12 +49,34 @@ public class HomeFragment extends Fragment {
         if(mType==0)//货主页面
         {
             root=inflater.inflate(R.layout.fragment_home_owner,container,false);
+            mRecyclerView=root.findViewById(R.id.recycler_view);
+            EditText startEv=root.findViewById(R.id.et_start);
+            EditText endEv=root.findViewById(R.id.et_end);
+            Button button=root.findViewById(R.id.btn_search);
+            //搜索按钮
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SearchBean searchBean=new SearchBean();
+                    searchBean.setStart(startEv.getText().toString());
+                    searchBean.setEnd(endEv.getText().toString());
+                    homeViewModel.updateDriver(searchBean);
+                }
+            });
+            //司机数据更新
+            homeViewModel.getDrviers().observe(this, new Observer<List<UserInfoBean>>() {
+                @Override
+                public void onChanged(List<UserInfoBean> userInfoBeans) {
+                    mDriverAdapter.setList(userInfoBeans);
+                    mDriverAdapter.notifyDataSetChanged();
+                }
+            });
 
         }else if(mType==1){//司机页面
             root = inflater.inflate(R.layout.fragment_home_driver, container, false);
             mRecyclerView=root.findViewById(R.id.recycler_view);
 
-            homeViewModel.getText().observe(this, new Observer<List<String>>() {
+            homeViewModel.getData().observe(this, new Observer<List<String>>() {
                 @Override
                 public void onChanged(@Nullable List<String> list) {
                     mLocationAdapter.setList(list);
@@ -60,23 +86,6 @@ public class HomeFragment extends Fragment {
         }
 
         return root;
-    }
-    private void setActionBar()
-    {
-        ActionBar actionBar=getActivity().getActionBar();
-        //设置标题
-        if(actionBar!=null)
-        {
-
-            if(mType==0)//货主
-            {
-                actionBar.setTitle("路线");
-            }else if(mType==1)//司机
-            {
-                actionBar.setTitle("滴滴物流");
-            }
-        }
-
     }
 
 
@@ -118,7 +127,7 @@ public class HomeFragment extends Fragment {
         {
             if(requestCode==REQUEST_EDIT)
             {
-                homeViewModel.update();
+                homeViewModel.updatePath();
             }
         }
     }
@@ -128,19 +137,21 @@ public class HomeFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
 
+        // 设置布局
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(linearLayoutManager);
 
         if(mType==0)//货主
         {
+            mDriverAdapter=new DriverAdapter(null,getActivity());
+            mRecyclerView.setAdapter(mDriverAdapter);
 
         }else if(mType==1){//司机
             mLocationAdapter=new LocationAdapter(null);
             mRecyclerView.setAdapter(mLocationAdapter);
-            // 设置布局
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-            mRecyclerView.setLayoutManager(linearLayoutManager);
+
         }
-        homeViewModel.update();
-        setActionBar();
+        homeViewModel.updatePath();
 
     }
 }
