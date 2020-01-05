@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:background="@color/colorBg">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -38,7 +40,7 @@
 
         <EditText
             android:id="@+id/et_start"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="text"
@@ -49,7 +51,7 @@
 
         <EditText
             android:id="@+id/et_end"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="text"

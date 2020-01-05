@@ -11,7 +11,6 @@ public class DataShare {
     private static SearchBean sSearchBean;
     private static List<PathBean> sPathBeans;
 
-
     public static List<PathBean> getPathBeans() {
         return sPathBeans;
     }

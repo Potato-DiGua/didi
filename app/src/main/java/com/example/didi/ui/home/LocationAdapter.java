@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.didi.R;
 import com.example.didi.beans.PathBean;
+import com.example.didi.utils.Utils;
 
 import java.util.List;
 
@@ -37,9 +38,12 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         View view=holder.itemView;
-        TextView locationTv=view.findViewById(R.id.tv_location);
+        TextView textView=view.findViewById(R.id.tv_location);
         PathBean pathBean=mList.get(position);
-        locationTv.setText(pathBean.getLocation());
+        textView.setText(pathBean.getLocation());
+        textView=view.findViewById(R.id.tv_carriage);
+        textView.setText(Utils.formatBalance(pathBean.getCarriage()));
+
 
 
     }

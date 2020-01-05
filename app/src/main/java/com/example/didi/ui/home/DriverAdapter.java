@@ -35,7 +35,7 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.MyViewHold
     @NonNull
     @Override
     public DriverAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.location_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_item, parent, false);
         return new DriverAdapter.MyViewHolder(view);
     }
 
@@ -43,7 +43,7 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.MyViewHold
     public void onBindViewHolder(@NonNull DriverAdapter.MyViewHolder holder, int position) {
         View view=holder.itemView;
         UserInfoBean user=mList.get(position);
-        TextView locationTv=view.findViewById(R.id.tv_location);
+        TextView locationTv=view.findViewById(R.id.textView);
         locationTv.setText(user.getNickName()+"-"+user.getPhone());
         view.setOnClickListener(new View.OnClickListener() {
             @Override

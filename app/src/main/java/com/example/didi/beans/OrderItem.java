@@ -8,6 +8,15 @@ public class OrderItem {
     private String end;
     private String phone;
     private float price;
+    private String time;
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public int getOrderID() {
         return orderID;

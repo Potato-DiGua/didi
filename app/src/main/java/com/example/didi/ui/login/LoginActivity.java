@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -28,6 +29,7 @@ import com.example.didi.R;
 import com.example.didi.beans.LoginBean;
 import com.example.didi.data.LoginRepository;
 import com.example.didi.ui.register.RegisterActivity;
+import com.example.didi.utils.HttpUtils;
 import com.example.didi.utils.Utils;
 
 public class LoginActivity extends AppCompatActivity {
@@ -40,7 +42,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private Button registerButton;
 
-    private Handler mHandler=new Handler();
+    private Handler mHandler = new Handler();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +53,6 @@ public class LoginActivity extends AppCompatActivity {
 
         accountEditText = findViewById(R.id.account);
         passwordEditText = findViewById(R.id.password);
-
 
 
         loginButton = findViewById(R.id.btn_login);
@@ -64,10 +66,12 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 loginButton.setEnabled(loginFormState.isDataValid());
-                if (loginFormState.getAccountError() != null) {
+                if (loginFormState.getAccountError() != null &&
+                        !TextUtils.isEmpty(accountEditText.getText().toString())) {
                     accountEditText.setError(getString(loginFormState.getAccountError()));
                 }
-                if (loginFormState.getPasswordError() != null) {
+                if (loginFormState.getPasswordError() != null &&
+                        !TextUtils.isEmpty(passwordEditText.getText().toString())) {
                     passwordEditText.setError(getString(loginFormState.getPasswordError()));
                 }
             }
@@ -82,18 +86,17 @@ public class LoginActivity extends AppCompatActivity {
                 setLoading(false);
 
                 if (result) {
-                    Intent intent=new Intent(LoginActivity.this, MainActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
-                    if(!TextUtils.isEmpty(accountEditText.getText().toString()))
-                    {
-                        Utils.saveUser(LoginActivity.this,new LoginBean(accountEditText.getText().toString(),
+                    if (!TextUtils.isEmpty(accountEditText.getText().toString())) {
+                        Utils.saveUser(LoginActivity.this, new LoginBean(accountEditText.getText().toString(),
                                 passwordEditText.getText().toString(),
                                 getCheckedIndex()));
                     }
                     setResult(Activity.RESULT_OK);
                     finish();
-                }else {
-                    Toast.makeText(LoginActivity.this,"账号或密码错误",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(LoginActivity.this, "账号或密码错误", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -153,12 +156,16 @@ public class LoginActivity extends AppCompatActivity {
 
         quickLogin();
     }
-    private void setLoading(boolean enabled)
-    {
-        if(enabled)
-        {
+
+    /**
+     * 加载状态开关
+     *
+     * @param enabled
+     */
+    private void setLoading(boolean enabled) {
+        if (enabled) {
             loadingProgressBar.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             loadingProgressBar.setVisibility(View.GONE);
         }
         loginButton.setEnabled(!enabled);
@@ -167,33 +174,39 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText.setEnabled(!enabled);
         mRadioGroup.setEnabled(!enabled);
     }
-    private void quickLogin()
-    {
 
+    /**
+     * 快速登录
+     */
+    private void quickLogin() {
+        HttpUtils.readCookie(LoginActivity.this);
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if(LoginRepository.getInstance().isLoggedIn())
-                {
+
+                if (LoginRepository.getInstance().isLoggedIn()
+                        && HttpUtils.updateUserInfoFromInternet()) {
+                    Log.d("login", "sessionid可用");
+                    //保存cookie后才能实现跳过登录界面
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Intent intent=new Intent(LoginActivity.this, MainActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
                         }
                     });
 
-                }else {
+                } else {
+                    //从本地读取账号密码
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            LoginBean loginBean=Utils.loadUser(LoginActivity.this);
-                            if(loginBean!=null)
-                            {
+                            LoginBean loginBean = Utils.loadUser(LoginActivity.this);
+                            if (loginBean != null) {
                                 accountEditText.setText(loginBean.getPhone());
                                 passwordEditText.setText(loginBean.getPwd());
-                                mRadioGroup.check(loginBean.getType()==0?R.id.radio_btn_owner:R.id.radio_btn_driver);
+                                mRadioGroup.check(loginBean.getType() == 0 ? R.id.radio_btn_owner : R.id.radio_btn_driver);
                             }
                         }
                     });

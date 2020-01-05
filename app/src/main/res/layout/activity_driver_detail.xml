@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBg"
     tools:context=".ui.driverdetail.DriverDetailActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -97,7 +98,7 @@
             android:inputType="number"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_size"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView17"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -148,6 +149,16 @@
             android:textSize="@dimen/text_size"
             app:layout_constraintStart_toEndOf="@+id/tv_price"
             app:layout_constraintTop_toTopOf="@+id/tv_price" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/goods_weight"
+            android:textSize="@dimen/text_size"
+            app:layout_constraintBottom_toBottomOf="@+id/et_weight"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/et_weight" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

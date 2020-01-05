@@ -1,6 +1,7 @@
 package com.example.didi.ui.home;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -160,6 +162,14 @@ public class HomeFragment extends Fragment {
             mRecyclerView.setAdapter(mLocationAdapter);
 
         }
+        //添加分割线
+        Context context=getContext();
+        if(context!=null)
+        {
+            mRecyclerView.addItemDecoration(
+                    new DividerItemDecoration(context,DividerItemDecoration.VERTICAL));
+        }
+
         homeViewModel.updatePath();
 
     }

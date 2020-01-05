@@ -5,10 +5,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.didi.R;
-import com.example.didi.beans.UserInfoBean;
-import com.example.didi.utils.Utils;
 import com.example.didi.data.LoginRepository;
-import com.example.didi.data.Result;
+import com.example.didi.utils.Utils;
 
 public class LoginViewModel extends ViewModel {
 
@@ -40,6 +38,11 @@ public class LoginViewModel extends ViewModel {
         }).start();
     }
 
+    /**
+     * 判断账号密码是否有效
+     * @param account
+     * @param password
+     */
     public void loginDataChanged(String account, String password) {
         if (!Utils.isAccountValid(account)) {
             loginFormState.setValue(new LoginFormState(R.string.invalid_account, null));

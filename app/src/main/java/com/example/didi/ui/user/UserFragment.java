@@ -1,13 +1,18 @@
 package com.example.didi.ui.user;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,8 +32,12 @@ import com.example.didi.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -36,7 +45,7 @@ import okhttp3.Response;
 public class UserFragment extends Fragment {
 
     private UserViewModel mUserViewModel;
-    private Handler mHandler=new Handler();
+    private Handler mHandler = new Handler();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -47,32 +56,63 @@ public class UserFragment extends Fragment {
         final TextView tvNickName = root.findViewById(R.id.tv_nick_name);
         final TextView tvPhone = root.findViewById(R.id.tv_phone);
         final TextView tvSex = root.findViewById(R.id.tv_sex);
-        TextView tvBalance=root.findViewById(R.id.tv_balance);
-        Button button=root.findViewById(R.id.btn_logout);
+        TextView tvBalance = root.findViewById(R.id.tv_balance);
+        Button button = root.findViewById(R.id.btn_logout);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if(LoginRepository.getInstance().logout(getActivity()))
-                        {
+                        if (LoginRepository.getInstance().logout(getActivity())) {
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     startActivity(new Intent(getActivity(), LoginActivity.class));
+                                    Activity activity = getActivity();
+                                    if (activity != null) {
+                                        activity.finish();
+                                    }
                                 }
                             });
-                        }else {
+                        } else {
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(getActivity(),"注销失败",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), "注销失败", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
                     }
                 }).start();
+            }
+        });
+
+        button = root.findViewById(R.id.btn_add_balance);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                View v = getLayoutInflater().inflate(R.layout.dialog_add_balance, null);
+                EditText editText = v.findViewById(R.id.editText);
+                AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                        .setTitle("充值")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                addBalance(editText.getText().toString());
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .setView(v)
+                        .create();
+
+                alertDialog.show();
+
             }
         });
 
@@ -83,15 +123,13 @@ public class UserFragment extends Fragment {
                 tvNickName.setText(user.getNickName());
                 tvPhone.setText(user.getPhone());
                 String sex;
-                if(user.getSex()==null)
-                {
-                    sex="未知";
-                }else
-                {
-                    if(user.getSex().equals(String.valueOf(0)))
-                        sex="男";
+                if (user.getSex() == null) {
+                    sex = "未知";
+                } else {
+                    if (user.getSex().equals(String.valueOf(0)))
+                        sex = "男";
                     else
-                        sex="女";
+                        sex = "女";
                 }
                 tvSex.setText(sex);
                 tvBalance.setText(Utils.formatBalance(user.getBalance()));
@@ -102,41 +140,62 @@ public class UserFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                updateFromInternet();
+                if(HttpUtils.updateUserInfoFromInternet())
+                {
+                    updateView();
+                }
+
             }
         }).start();
         return root;
     }
-    private void updateFromInternet()
-    {
+
+    private void addBalance(String balance) {
+        if (TextUtils.isEmpty(balance))
+            return;
         OkHttpClient okHttpClient = HttpUtils.getOkHttpClient();
         Gson gson = new Gson();
 
         Request request = new Request.Builder()
-                .url(HttpUtils.BASE_URL + "/userinfo")
+                .url(HttpUtils.BASE_URL + "/addbalance?money=" + balance)
                 .build();
-        try {
-            Response response=okHttpClient.newCall(request).execute();
-            String json = response.body().string();
-            Log.d("update",json);
-            if (!json.isEmpty()) {
-                SendBean<UserInfoBean> result = gson.fromJson(json
-                        , new TypeToken<SendBean<UserInfoBean>>() {}.getType());
-                if (result.getStatus().equals("ok")) {
-                    UserInfoBean user=result.getData();
-                    if(user!=null)
-                    {
-                        DataShare.setUser(user);
-                        updateView();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String json = response.body().string();
+                Log.d("update", json);
+                if (!json.isEmpty()) {
+                    SendBean<Boolean> result = gson.fromJson(json
+                            , new TypeToken<SendBean<Boolean>>() {
+                            }.getType());
+                    if (result.getStatus().equals("ok")) {
+                        if (result.getData()) {
+                            if(HttpUtils.updateUserInfoFromInternet())
+                            {
+                                updateView();
+                            }
+                        } else {
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getContext(), "充值失败", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+
                     }
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        });
     }
-    private void updateView()
-    {
+
+    private void updateView() {
         mUserViewModel.setUser(DataShare.getUser());
     }
 }

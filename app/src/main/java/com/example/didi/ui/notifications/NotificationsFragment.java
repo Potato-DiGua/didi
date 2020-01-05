@@ -63,6 +63,12 @@ public class NotificationsFragment extends Fragment {
             public void onChanged(List<OrderItem> orderItems) {
                 mOrderAdapter.setList(orderItems);
                 mOrderAdapter.notifyDataSetChanged();
+                int size=mOrderAdapter.getItemCount();
+                if(size>0)
+                {
+                    mRecyclerView.scrollToPosition(mOrderAdapter.getItemCount()-1);
+                }
+
             }
         });
 

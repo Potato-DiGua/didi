@@ -12,7 +12,7 @@
 
     <EditText
         android:id="@+id/et_location"
-        android:layout_width="150dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:textColor="@color/colorBlack"
         android:textSize="18sp"
@@ -46,7 +46,7 @@
 
     <EditText
         android:id="@+id/et_carriage"
-        android:layout_width="150dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:layout_marginStart="5dp"

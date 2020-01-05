@@ -51,6 +51,9 @@
     <string name="prompt_carriage">运费(每公斤)</string>
 
     <string name="order_id">订单号:</string>
+    <string name="add_balance">充值</string>
+    <string name="prompt_add_balance">充值金额</string>
+    <string name="goods_weight">货物重量:</string>
 
     <string name="pay_money">付款金额</string>
     <string name="money_sign">￥</string>

@@ -70,6 +70,9 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyViewHolder
         tv=view.findViewById(R.id.tv_price);
         tv.setText(Utils.formatBalance(item.getPrice()));
 
+        tv=view.findViewById(R.id.tv_time);
+        tv.setText(item.getTime());
+
     }
 
     @Override

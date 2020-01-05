@@ -95,8 +95,9 @@ public class LoginDataSource {
     }
     public boolean isLoggedIn(){
         OkHttpClient okHttpClient = HttpUtils.getOkHttpClient();
-        Request request = new Request.Builder().url(HttpUtils.BASE_URL + "/islogin").build();
-
+        Request request = new Request.Builder()
+                .url(HttpUtils.BASE_URL + "/islogin")
+                .build();
         try {
             Response response=okHttpClient.newCall(request).execute();
             String json = response.body().string();
@@ -104,6 +105,7 @@ public class LoginDataSource {
             if (!json.isEmpty()) {
                 Gson gson = new Gson();
                 SendBean<Boolean> sendBean = gson.fromJson(json,new TypeToken<SendBean<Boolean>>(){}.getType());
+
                 if(sendBean.getStatus().equals("ok"))
                 {
                     return sendBean.getData();
