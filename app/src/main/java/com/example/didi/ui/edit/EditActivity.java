@@ -12,13 +12,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.didi.R;
+import com.example.didi.beans.PathBean;
+import com.example.didi.data.DataShare;
 import com.example.didi.utils.HttpUtils;
 import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -30,7 +31,7 @@ import okhttp3.Response;
 public class EditActivity extends AppCompatActivity {
 
     private static final String TAG="EditActivity";
-    private List<String> mList;
+    private List<PathBean> mList;
     private LocationEditAdapter locationEditAdapter;
     private Handler mHandler=new Handler();
     public static final String EXTRA_DATA="path";
@@ -44,13 +45,7 @@ public class EditActivity extends AppCompatActivity {
         // 设置布局
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
-        mList=new ArrayList<>();
-        String[] strings=getIntent().getStringArrayExtra(EXTRA_DATA);
-        if(strings!=null)
-        {
-            for(String s:strings)
-                mList.add(s);
-        }
+        mList= DataShare.getPathBeans();
         locationEditAdapter=new LocationEditAdapter(mList);
         mRecyclerView.setAdapter(locationEditAdapter);
     }
@@ -60,47 +55,51 @@ public class EditActivity extends AppCompatActivity {
         int id=item.getItemId();
         if(id==R.id.menu_add)
         {
-            mList.add("");
+            mList.add(new PathBean());
             locationEditAdapter.notifyDataSetChanged();
         }else if(id==R.id.menu_done)
         {
             for(int i=mList.size()-1;i>0;i--)
             {
-                if(mList.get(i).isEmpty())
+                if(mList.get(i).getLocation().isEmpty())
                     mList.remove(i);
             }
             locationEditAdapter.notifyDataSetChanged();
+            postPath();
 
-            Gson gson=new Gson();
-            String body=gson.toJson(mList);
-            Request request=new Request.Builder()
-                    .url(HttpUtils.BASE_URL+"/updatepath")
-                    .post(RequestBody.create(body, HttpUtils.JSON))
-                    .build();
-            HttpUtils.getOkHttpClient().newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(EditActivity.this,"更新数据失败",Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-
-                @Override
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            setResult(RESULT_OK);
-                            finish();
-                        }
-                    });
-                }
-            });
         }
         return super.onOptionsItemSelected(item);
+    }
+    private void postPath()
+    {
+        Gson gson=new Gson();
+        String body=gson.toJson(mList);
+        Request request=new Request.Builder()
+                .url(HttpUtils.BASE_URL+"/updatepath")
+                .post(RequestBody.create(body, HttpUtils.JSON))
+                .build();
+        HttpUtils.getOkHttpClient().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(EditActivity.this,"更新数据失败",Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        setResult(RESULT_OK);
+                        finish();
+                    }
+                });
+            }
+        });
     }
 
     @Override

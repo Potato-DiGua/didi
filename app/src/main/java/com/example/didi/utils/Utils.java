@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.didi.beans.LoginBean;
-import com.example.didi.ui.login.LoginViewModel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -90,6 +90,24 @@ public class Utils {
         }
         return "";
     }
+
+    /**
+     * 保留两位小数
+     * @param money
+     * @return
+     */
+    public static String formatBalance(float money)
+    {
+        //构造方法的字符格式这里如果小数不足2位,会以0补足
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        //format 返回的是字符串
+        return decimalFormat.format(money);
+    }
+
+    /**
+     * 从sharedPreferences删除用户账号信息
+     * @param context
+     */
     public static void removeUser(Context context)
     {
         SharedPreferences sharedPreferences= context.getSharedPreferences("data",Context.MODE_PRIVATE);
@@ -101,6 +119,12 @@ public class Utils {
 
         editor.apply();
     }
+
+    /**
+     * 保存用户账号密码信息到sharedPreferences
+     * @param context
+     * @param loginBean
+     */
     public static void saveUser(Context context, LoginBean loginBean)
     {
         SharedPreferences sharedPreferences= context.getSharedPreferences("data",Context.MODE_PRIVATE);
@@ -112,6 +136,12 @@ public class Utils {
         //步骤4：提交
         editor.apply();
     }
+
+    /**
+     * 从sharedPreferences读取用户账号密码信息
+     * @param context
+     * @return
+     */
     public static LoginBean loadUser(Context context)
     {
         SharedPreferences sharedPreferences= context.getSharedPreferences("data",Context.MODE_PRIVATE);
@@ -128,6 +158,5 @@ public class Utils {
         }
 
         return loginBean;
-
     }
 }

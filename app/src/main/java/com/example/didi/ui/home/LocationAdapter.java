@@ -9,20 +9,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.didi.R;
+import com.example.didi.beans.PathBean;
 
 import java.util.List;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.MyViewHolder> {
-    private List<String> mList;
-    public LocationAdapter(List<String> list) {
+    private List<PathBean> mList;
+    public LocationAdapter(List<PathBean> list) {
         mList = list;
     }
 
-    public List<String> getList() {
+    public List<PathBean> getList() {
         return mList;
     }
 
-    public void setList(List<String> mList) {
+    public void setList(List<PathBean> mList) {
         this.mList = mList;
     }
 
@@ -36,8 +37,10 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         View view=holder.itemView;
-        TextView textView=view.findViewById(R.id.textView);
-        textView.setText(mList.get(position));
+        TextView locationTv=view.findViewById(R.id.tv_location);
+        PathBean pathBean=mList.get(position);
+        locationTv.setText(pathBean.getLocation());
+
 
     }
 

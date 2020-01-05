@@ -1,8 +1,9 @@
 package com.example.didi.ui.home;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.didi.R;
+import com.example.didi.beans.PathBean;
 import com.example.didi.beans.SearchBean;
 import com.example.didi.beans.UserInfoBean;
 import com.example.didi.data.DataShare;
@@ -67,19 +69,33 @@ public class HomeFragment extends Fragment {
             homeViewModel.getDrviers().observe(this, new Observer<List<UserInfoBean>>() {
                 @Override
                 public void onChanged(List<UserInfoBean> userInfoBeans) {
+
                     mDriverAdapter.setList(userInfoBeans);
                     mDriverAdapter.notifyDataSetChanged();
+
+                    if(userInfoBeans==null||userInfoBeans.size()==0)
+                    {
+                        //显示提示框
+                        AlertDialog alertDialog=new AlertDialog.Builder(getActivity())
+                                .setMessage("没有找到符合要求的司机信息")
+                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                                    }
+                                }).create();
+                        alertDialog.show();
+                    }
                 }
             });
 
-        }else if(mType==1){//司机页面
+        }else if(mType==1) {//司机页面
             root = inflater.inflate(R.layout.fragment_home_driver, container, false);
-            mRecyclerView=root.findViewById(R.id.recycler_view);
-
-            homeViewModel.getData().observe(this, new Observer<List<String>>() {
+            mRecyclerView = root.findViewById(R.id.recycler_view);
+            homeViewModel.getPathData().observe(this, new Observer<List<PathBean>>() {
                 @Override
-                public void onChanged(@Nullable List<String> list) {
-                    mLocationAdapter.setList(list);
+                public void onChanged(List<PathBean> pathBeans) {
+                    mLocationAdapter.setList(pathBeans);
                     mLocationAdapter.notifyDataSetChanged();
                 }
             });
@@ -106,13 +122,6 @@ public class HomeFragment extends Fragment {
             if(id==R.id.menu_edit)
             {
                 Intent intent=new Intent(getActivity(),EditActivity.class);
-                if(mLocationAdapter.getList()!=null&&mLocationAdapter.getList().size()>0)
-                {
-                    Log.d(TAG,"list不为空");
-                    String[] strings=new String[mLocationAdapter.getList().size()];
-                    mLocationAdapter.getList().toArray(strings);
-                    intent.putExtra(EditActivity.EXTRA_DATA,strings);
-                }
                 startActivityForResult(intent,REQUEST_EDIT);
             }
         }

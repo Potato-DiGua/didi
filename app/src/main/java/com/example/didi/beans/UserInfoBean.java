@@ -6,6 +6,15 @@ public class UserInfoBean {
     private String nickName;
     private String sex;
     private int type;
+    private float balance;
+
+    public float getBalance() {
+        return balance;
+    }
+
+    public void setBalance(float balance) {
+        this.balance = balance;
+    }
 
     public int getType() {
         return type;

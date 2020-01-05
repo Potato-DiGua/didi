@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,12 +11,13 @@
     android:background="@color/colorWhite">
 
     <EditText
-        android:id="@+id/edit_text"
-        android:layout_width="250dp"
+        android:id="@+id/et_location"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:textColor="@color/colorBlack"
         android:textSize="18sp"
         android:inputType="text"
+        android:hint="@string/prompt_location"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -41,5 +43,18 @@
         app:layout_constraintTop_toTopOf="@id/imgBtn_add"
 
         app:srcCompat="@drawable/ic_remove_white_24dp" />
+
+    <EditText
+        android:id="@+id/et_carriage"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_marginStart="5dp"
+        android:textColor="@color/colorBlack"
+        android:hint="@string/prompt_carriage"
+        android:textSize="18sp"
+        android:inputType="numberDecimal"
+        app:layout_constraintStart_toEndOf="@+id/et_location"
+        app:layout_constraintTop_toTopOf="@+id/et_location" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -38,9 +38,25 @@
 
     <string name="pay">付款</string>
     <string name="path">路线:</string>
+    <string name="balance">余额:￥</string>
+    <string name="yuan">元</string>
+<!--    driverDetail-->
+    <string name="prompt_weight">请输入货物重量</string>
+    <string name="kilo">公斤</string>
+    <string name="price">价格:</string>
+    <string name="carriageUnit">元/公斤</string>
 
+<!--    edit-->
+    <string name="prompt_location">地点</string>
+    <string name="prompt_carriage">运费(每公斤)</string>
+
+    <string name="order_id">订单号:</string>
+
+    <string name="pay_money">付款金额</string>
+    <string name="money_sign">￥</string>
+    <string name="owner">货主:</string>
+    <string name="deriver">司机:</string>
     <string name="title_home">主页</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notification">通知</string>
+    <string name="title_notification">订单</string>
     <string name="title_user">我</string>
 </resources>

@@ -36,6 +36,9 @@ public class LoginActivity extends AppCompatActivity {
     private RadioGroup mRadioGroup;
     private EditText accountEditText;
     private EditText passwordEditText;
+    private ProgressBar loadingProgressBar;
+    private Button loginButton;
+    private Button registerButton;
 
     private Handler mHandler=new Handler();
     @Override
@@ -50,9 +53,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-        final Button loginButton = findViewById(R.id.btn_login);
-        final Button registerButton = findViewById(R.id.btn_register);
-        final ProgressBar loadingProgressBar = findViewById(R.id.loading);
+        loginButton = findViewById(R.id.btn_login);
+        registerButton = findViewById(R.id.btn_register);
+        loadingProgressBar = findViewById(R.id.loading);
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
@@ -76,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (result == null) {
                     return;
                 }
-                loadingProgressBar.setVisibility(View.GONE);
+                setLoading(false);
 
                 if (result) {
                     Intent intent=new Intent(LoginActivity.this, MainActivity.class);
@@ -135,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
+                setLoading(true);
                 loginViewModel.login(accountEditText.getText().toString(),
                         passwordEditText.getText().toString(),
                         getCheckedIndex());
@@ -149,6 +152,20 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         quickLogin();
+    }
+    private void setLoading(boolean enabled)
+    {
+        if(enabled)
+        {
+            loadingProgressBar.setVisibility(View.VISIBLE);
+        }else {
+            loadingProgressBar.setVisibility(View.GONE);
+        }
+        loginButton.setEnabled(!enabled);
+        registerButton.setEnabled(!enabled);
+        accountEditText.setEnabled(!enabled);
+        passwordEditText.setEnabled(!enabled);
+        mRadioGroup.setEnabled(!enabled);
     }
     private void quickLogin()
     {

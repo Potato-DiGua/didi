@@ -57,6 +57,8 @@ public class LoginDataSource {
                 if (result.getStatus().equals("ok")) {
                     if (result.getData() != null) {
 
+                        DataShare.setUser(result.getData());
+
                     }
                     return new Result.Success<>(result.getData());
                 }

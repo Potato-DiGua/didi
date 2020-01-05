@@ -1,6 +1,7 @@
 package com.example.didi.ui.edit;
 
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,14 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.didi.R;
-import com.example.didi.ui.login.LoginActivity;
+import com.example.didi.beans.PathBean;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class LocationEditAdapter extends RecyclerView.Adapter<LocationEditAdapter.MyViewHolder> {
-    public List<String> mList;
-    public LocationEditAdapter(List<String> list) {
+    public List<PathBean> mList;
+    public LocationEditAdapter(List<PathBean> list) {
         mList = list;
     }
     @NonNull
@@ -34,18 +34,31 @@ public class LocationEditAdapter extends RecyclerView.Adapter<LocationEditAdapte
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         View view=holder.itemView;
-        EditText editText=view.findViewById(R.id.edit_text);
+        EditText locationEt=view.findViewById(R.id.et_location);
+        EditText carriageEt=view.findViewById(R.id.et_carriage);
         Log.d("position","位置："+position);
 
 
-        if(holder.mMyTextWatcher==null)
+        if(holder.mLocationTextWatcher ==null)
         {
-            holder.mMyTextWatcher=new MyTextWatcher(position);
-            editText.addTextChangedListener(holder.mMyTextWatcher);
+            holder.mLocationTextWatcher =new LocationTextWatcher(position);
+            locationEt.addTextChangedListener(holder.mLocationTextWatcher);
+        }else {
+            holder.mLocationTextWatcher.updatePosition(position);
         }
-        holder.mMyTextWatcher.updatePosition(position);
 
-        editText.setText(mList.get(position));
+        if(holder.mCarriageTextWatcher==null)
+        {
+            holder.mCarriageTextWatcher=new CarriageTextWatcher(position);
+            carriageEt.addTextChangedListener(holder.mCarriageTextWatcher);
+        }else {
+            holder.mCarriageTextWatcher.updatePosition(position);
+        }
+
+        PathBean pathBean=mList.get(position);
+        locationEt.setText(pathBean.getLocation());
+        carriageEt.setText(String.valueOf(pathBean.getCarriage()));
+
         ImageButton addBtn=view.findViewById(R.id.imgBtn_add);
         ImageButton removeBtn=view.findViewById(R.id.imgBtn_remove);
         addBtn.setOnClickListener(new View.OnClickListener() {
@@ -53,9 +66,9 @@ public class LocationEditAdapter extends RecyclerView.Adapter<LocationEditAdapte
             public void onClick(View view) {
                 if(position>=mList.size()-1)
                 {
-                    mList.add("");
+                    mList.add(new PathBean());
                 }else{
-                    mList.add(position+1,"");
+                    mList.add(position+1,new PathBean());
                 }
                 notifyDataSetChanged();
             }
@@ -70,10 +83,10 @@ public class LocationEditAdapter extends RecyclerView.Adapter<LocationEditAdapte
 
     }
 
-    private class MyTextWatcher implements TextWatcher{
-        private int mPosition;
+    private class LocationTextWatcher implements TextWatcher{
+        protected int mPosition;
 
-        public MyTextWatcher(int position) {
+        public LocationTextWatcher(int position) {
             this.mPosition = position;
         }
         public void updatePosition(int position)
@@ -93,7 +106,20 @@ public class LocationEditAdapter extends RecyclerView.Adapter<LocationEditAdapte
 
         @Override
         public void afterTextChanged(Editable editable) {
-            mList.set(mPosition,editable.toString());
+
+            mList.get(mPosition).setLocation(editable.toString());
+        }
+    }
+    private class CarriageTextWatcher extends LocationTextWatcher{
+        public CarriageTextWatcher(int position) {
+            super(position);
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            String s=editable.toString();
+            float carriage= TextUtils.isEmpty(s)?0.0f:Float.parseFloat(s);
+            mList.get(mPosition).setCarriage(carriage);
         }
     }
 
@@ -103,7 +129,8 @@ public class LocationEditAdapter extends RecyclerView.Adapter<LocationEditAdapte
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        private MyTextWatcher mMyTextWatcher;
+        private LocationTextWatcher mLocationTextWatcher;
+        private CarriageTextWatcher mCarriageTextWatcher;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
         }

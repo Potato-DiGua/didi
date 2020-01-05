@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.didi.beans.PathBean;
 import com.example.didi.beans.SearchBean;
 import com.example.didi.beans.SendBean;
 import com.example.didi.beans.UserInfoBean;
@@ -28,22 +29,25 @@ import okhttp3.Response;
 
 public class HomeViewModel extends ViewModel {
 
-    private MutableLiveData<List<String>> mData;
+    private MutableLiveData<List<PathBean>> mPathData;
     private MutableLiveData<List<UserInfoBean>> mSearchDrivers;
 
     public HomeViewModel() {
         mSearchDrivers = new MutableLiveData<>();
-        mData = new MutableLiveData<>();
+        mPathData = new MutableLiveData<>();
     }
 
-    public LiveData<List<String>> getData() {
-        return mData;
+    public LiveData<List<PathBean>> getPathData() {
+        return mPathData;
     }
 
     public LiveData<List<UserInfoBean>> getDrviers() {
         return mSearchDrivers;
     }
 
+    /**
+     * 搜索司机的路线信息
+     */
     public void updatePath() {
         Request request = new Request.Builder()
                 .url(HttpUtils.BASE_URL + "/path")
@@ -58,16 +62,21 @@ public class HomeViewModel extends ViewModel {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String json = response.body().string();
                 Gson gson = new Gson();
-                SendBean<List<String>> sendBean = gson.fromJson(json
-                        , new TypeToken<SendBean<List<String>>>() {
+                SendBean<List<PathBean>> sendBean = gson.fromJson(json
+                        , new TypeToken<SendBean<List<PathBean>>>() {
                         }.getType());
                 if (sendBean.getStatus().equals("ok")) {
-                    mData.postValue(sendBean.getData());
+                    mPathData.postValue(sendBean.getData());
+                    DataShare.setPathBeans(sendBean.getData());
                 }
             }
         });
     }
 
+    /**
+     * 根据出发地点和终点 搜索司机信息
+     * @param searchBean
+     */
     public void updateDriver(SearchBean searchBean) {
 
         if(!TextUtils.isEmpty(searchBean.getStart())&&!TextUtils.isEmpty(searchBean.getEnd()))
@@ -89,12 +98,18 @@ public class HomeViewModel extends ViewModel {
                     String json = response.body().string();
                     Log.d("search",json);
                     Gson gson = new Gson();
+                    Log.d("search",json);
                     SendBean<List<UserInfoBean>> sendBean = gson.fromJson(json
                             , new TypeToken<SendBean<List<UserInfoBean>>>() {
                             }.getType());
                     if (sendBean.getStatus().equals("ok")) {
-                        mSearchDrivers.postValue(sendBean.getData());
-                        DataShare.setSearchBean(searchBean);
+                        if(sendBean.getData()!=null)
+                        {
+                            mSearchDrivers.postValue(sendBean.getData());
+                            //保存终点与起点
+                            DataShare.setSearchBean(searchBean);
+                        }
+
                     }
                 }
             });

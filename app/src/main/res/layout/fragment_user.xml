@@ -87,6 +87,36 @@
             android:textSize="@dimen/text_size"
             app:layout_constraintStart_toEndOf="@+id/textView4"
             app:layout_constraintTop_toBottomOf="@+id/tv_sex" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/balance"
+            android:textSize="@dimen/text_size"
+            app:layout_constraintStart_toStartOf="@+id/textView4"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+        <TextView
+            android:id="@+id/tv_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorOrange"
+            android:textSize="@dimen/text_size"
+            android:layout_marginStart="3dp"
+            app:layout_constraintStart_toEndOf="@+id/textView8"
+            app:layout_constraintTop_toTopOf="@+id/textView8" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/yuan"
+            android:layout_marginStart="3dp"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/text_size"
+            app:layout_constraintStart_toEndOf="@+id/tv_balance"
+            app:layout_constraintTop_toTopOf="@+id/tv_balance" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button

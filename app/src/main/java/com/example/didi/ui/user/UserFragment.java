@@ -23,15 +23,12 @@ import com.example.didi.data.DataShare;
 import com.example.didi.data.LoginRepository;
 import com.example.didi.ui.login.LoginActivity;
 import com.example.didi.utils.HttpUtils;
+import com.example.didi.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -50,6 +47,7 @@ public class UserFragment extends Fragment {
         final TextView tvNickName = root.findViewById(R.id.tv_nick_name);
         final TextView tvPhone = root.findViewById(R.id.tv_phone);
         final TextView tvSex = root.findViewById(R.id.tv_sex);
+        TextView tvBalance=root.findViewById(R.id.tv_balance);
         Button button=root.findViewById(R.id.btn_logout);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,10 +94,17 @@ public class UserFragment extends Fragment {
                         sex="女";
                 }
                 tvSex.setText(sex);
+                tvBalance.setText(Utils.formatBalance(user.getBalance()));
             }
         });
 
         updateView();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                updateFromInternet();
+            }
+        }).start();
         return root;
     }
     private void updateFromInternet()
@@ -122,6 +127,7 @@ public class UserFragment extends Fragment {
                     if(user!=null)
                     {
                         DataShare.setUser(user);
+                        updateView();
                     }
                 }
             }
