@@ -56,6 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
         mRadioGroup = findViewById(R.id.radio_group);
         progressBar = findViewById(R.id.loading);
 
+        //检查数据是否有效
         TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -140,7 +141,6 @@ public class RegisterActivity extends AppCompatActivity {
                             });
 
                         }
-
                         @Override
                         public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                             String json = response.body().string();
@@ -172,6 +172,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * 设置加载状态
+     * @param b
+     */
     private void setLoading(boolean b) {
         registerBtn.setEnabled(!b);
         if (b) {

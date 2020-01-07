@@ -87,6 +87,10 @@ public class NotificationsFragment extends Fragment {
 
         getOrderItems();
     }
+
+    /**
+     * 从服务器获取订单数据
+     */
     private void getOrderItems()
     {
         Request request = new Request.Builder()
