@@ -63,6 +63,7 @@ public class HttpUtils {
      * @param context
      */
     public static void saveCookies(Context context) {
+
         HttpUrl url = HttpUrl.parse(BASE_URL);
         if (url != null) {
             List<Cookie> cookies = cookieJar.getCookieStore().get(url.host());
@@ -126,6 +127,8 @@ public class HttpUtils {
      * @return
      */
     public static void readCookie(Context context) {
+        if(DataShare.isLoadCookie())
+            return;
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("data", Context.MODE_PRIVATE);
         String cookieStr=sharedPreferences.getString("cookie", "");
@@ -150,6 +153,7 @@ public class HttpUtils {
 
 
         }
+        DataShare.setLoadCookie(true);
     }
 
     public static OkHttpClient getOkHttpClient() {

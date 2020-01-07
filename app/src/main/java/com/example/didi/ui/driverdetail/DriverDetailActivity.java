@@ -48,6 +48,7 @@ public class DriverDetailActivity extends AppCompatActivity {
     public static final String EXTRA_ID = "id";
     public static final String EXTRA_NICK_NAME = "nick_name";
     public static final String EXTRA_PHONE = "phone";
+    public static final String EXTRA_JUMP="jump";// 跳转
     private int mID;
     private Handler mHandler = new Handler();
     private TextView mPathTv;
@@ -319,7 +320,9 @@ public class DriverDetailActivity extends AppCompatActivity {
      */
     private void paySuccess()
     {
-        setResult(RESULT_OK);
+        Intent intent=new Intent();
+        intent.putExtra(EXTRA_JUMP,true);
+        setResult(RESULT_OK,intent);
         finish();
     }
     private void showToast(String str)

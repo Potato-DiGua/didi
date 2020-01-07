@@ -26,16 +26,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.didi.R;
 import com.example.didi.beans.PathBean;
+import com.example.didi.beans.PathInfoBean;
 import com.example.didi.beans.SearchBean;
-import com.example.didi.beans.UserInfoBean;
 import com.example.didi.data.DataShare;
 import com.example.didi.ui.edit.EditActivity;
 
 import java.util.List;
 
 public class HomeFragment extends Fragment {
-    private static final String TAG="HomeFragment";
-    private static final int REQUEST_EDIT=0x00;
+    private static final String TAG = "HomeFragment";
+    private static final int REQUEST_EDIT = 0x00;
 
     private HomeViewModel homeViewModel;
     private RecyclerView mRecyclerView;
@@ -45,40 +45,38 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        mType=DataShare.getUser().getType();
+        mType = DataShare.getUser().getType();
         setHasOptionsMenu(true);
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
-        View root=null;
-        if(mType==0)//货主页面
+        View root = null;
+        if (mType == 0)//货主页面
         {
-            root=inflater.inflate(R.layout.fragment_home_owner,container,false);
-            mRecyclerView=root.findViewById(R.id.recycler_view);
-            EditText startEv=root.findViewById(R.id.et_start);
-            EditText endEv=root.findViewById(R.id.et_end);
-            Button button=root.findViewById(R.id.btn_search);
+            root = inflater.inflate(R.layout.fragment_home_owner, container, false);
+            mRecyclerView = root.findViewById(R.id.recycler_view);
+            EditText startEv = root.findViewById(R.id.et_start);
+            EditText endEv = root.findViewById(R.id.et_end);
+            Button button = root.findViewById(R.id.btn_search);
             //搜索按钮
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SearchBean searchBean=new SearchBean();
+                    SearchBean searchBean = new SearchBean();
                     searchBean.setStart(startEv.getText().toString());
                     searchBean.setEnd(endEv.getText().toString());
                     homeViewModel.updateDriver(searchBean);
                 }
             });
             //司机数据更新
-            homeViewModel.getDrviers().observe(this, new Observer<List<UserInfoBean>>() {
+            homeViewModel.getDrivers().observe(this, new Observer<List<PathInfoBean>>() {
                 @Override
-                public void onChanged(List<UserInfoBean> userInfoBeans) {
-
-                    mDriverAdapter.setList(userInfoBeans);
+                public void onChanged(List<PathInfoBean> pathInfoBeans) {
+                    mDriverAdapter.setList(pathInfoBeans);
                     mDriverAdapter.notifyDataSetChanged();
 
-                    if(userInfoBeans==null||userInfoBeans.size()==0)
-                    {
+                    if (pathInfoBeans == null || pathInfoBeans.size() == 0) {
                         //显示提示框
-                        AlertDialog alertDialog=new AlertDialog.Builder(getActivity())
+                        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                                 .setMessage("没有找到符合要求的司机信息")
                                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                     @Override
@@ -91,7 +89,7 @@ public class HomeFragment extends Fragment {
                 }
             });
 
-        }else if(mType==1) {//司机页面
+        } else if (mType == 1) {//司机页面
             root = inflater.inflate(R.layout.fragment_home_driver, container, false);
             mRecyclerView = root.findViewById(R.id.recycler_view);
             homeViewModel.getPathData().observe(this, new Observer<List<PathBean>>() {
@@ -110,21 +108,20 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        if(mType==1)//司机
+        if (mType == 1)//司机
         {
-            inflater.inflate(R.menu.menu_driver_home,menu);
+            inflater.inflate(R.menu.menu_driver_home, menu);
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id=item.getItemId();
-        if(mType==1)//司机
+        int id = item.getItemId();
+        if (mType == 1)//司机
         {
-            if(id==R.id.menu_edit)
-            {
-                Intent intent=new Intent(getActivity(),EditActivity.class);
-                startActivityForResult(intent,REQUEST_EDIT);
+            if (id == R.id.menu_edit) {
+                Intent intent = new Intent(getActivity(), EditActivity.class);
+                startActivityForResult(intent, REQUEST_EDIT);
             }
         }
 
@@ -134,10 +131,8 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode== FragmentActivity.RESULT_OK)
-        {
-            if(requestCode==REQUEST_EDIT)
-            {
+        if (resultCode == FragmentActivity.RESULT_OK) {
+            if (requestCode == REQUEST_EDIT) {
                 homeViewModel.updatePath();
             }
         }
@@ -152,22 +147,21 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
-        if(mType==0)//货主
+        if (mType == 0)//货主
         {
-            mDriverAdapter=new DriverAdapter(null,getActivity());
+            mDriverAdapter = new DriverAdapter(null, getActivity());
             mRecyclerView.setAdapter(mDriverAdapter);
 
-        }else if(mType==1){//司机
-            mLocationAdapter=new LocationAdapter(null);
+        } else if (mType == 1) {//司机
+            mLocationAdapter = new LocationAdapter(null);
             mRecyclerView.setAdapter(mLocationAdapter);
 
         }
         //添加分割线
-        Context context=getContext();
-        if(context!=null)
-        {
+        Context context = getContext();
+        if (context != null) {
             mRecyclerView.addItemDecoration(
-                    new DividerItemDecoration(context,DividerItemDecoration.VERTICAL));
+                    new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         }
 
         homeViewModel.updatePath();

@@ -8,9 +8,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.didi.beans.PathBean;
+import com.example.didi.beans.PathInfoBean;
 import com.example.didi.beans.SearchBean;
 import com.example.didi.beans.SendBean;
-import com.example.didi.beans.UserInfoBean;
 import com.example.didi.data.DataShare;
 import com.example.didi.utils.HttpUtils;
 import com.google.gson.Gson;
@@ -30,7 +30,7 @@ import okhttp3.Response;
 public class HomeViewModel extends ViewModel {
 
     private MutableLiveData<List<PathBean>> mPathData;
-    private MutableLiveData<List<UserInfoBean>> mSearchDrivers;
+    private MutableLiveData<List<PathInfoBean>> mSearchDrivers;
 
     public HomeViewModel() {
         mSearchDrivers = new MutableLiveData<>();
@@ -41,7 +41,7 @@ public class HomeViewModel extends ViewModel {
         return mPathData;
     }
 
-    public LiveData<List<UserInfoBean>> getDrviers() {
+    public LiveData<List<PathInfoBean>> getDrivers() {
         return mSearchDrivers;
     }
 
@@ -99,8 +99,8 @@ public class HomeViewModel extends ViewModel {
                     Log.d("search",json);
                     Gson gson = new Gson();
                     Log.d("search",json);
-                    SendBean<List<UserInfoBean>> sendBean = gson.fromJson(json
-                            , new TypeToken<SendBean<List<UserInfoBean>>>() {
+                    SendBean<List<PathInfoBean>> sendBean = gson.fromJson(json
+                            , new TypeToken<SendBean<List<PathInfoBean>>>() {
                             }.getType());
                     if (sendBean.getStatus().equals("ok")) {
                         if(sendBean.getData()!=null)

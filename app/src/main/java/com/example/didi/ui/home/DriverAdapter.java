@@ -1,6 +1,6 @@
 package com.example.didi.ui.home;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,24 +11,25 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.didi.R;
-import com.example.didi.beans.UserInfoBean;
+import com.example.didi.beans.PathInfoBean;
 import com.example.didi.ui.driverdetail.DriverDetailActivity;
+import com.example.didi.utils.Utils;
 
 import java.util.List;
 
 public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.MyViewHolder> {
-    private List<UserInfoBean> mList;
-    private Context mContext;
-    public DriverAdapter(List<UserInfoBean> list, Context context) {
+    private List<PathInfoBean> mList;
+    private Activity mActivity;
+    public DriverAdapter(List<PathInfoBean> list, Activity activity) {
         mList = list;
-        mContext=context;
+        mActivity =activity;
     }
 
-    public List<UserInfoBean> getList() {
+    public List<PathInfoBean> getList() {
         return mList;
     }
 
-    public void setList(List<UserInfoBean> mList) {
+    public void setList(List<PathInfoBean> mList) {
         this.mList = mList;
     }
 
@@ -42,17 +43,24 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.MyViewHold
     @Override
     public void onBindViewHolder(@NonNull DriverAdapter.MyViewHolder holder, int position) {
         View view=holder.itemView;
-        UserInfoBean user=mList.get(position);
-        TextView locationTv=view.findViewById(R.id.textView);
-        locationTv.setText(user.getNickName()+"-"+user.getPhone());
+        PathInfoBean path=mList.get(position);
+        TextView textView=view.findViewById(R.id.tv_nick_name);
+        textView.setText(path.getNickName());
+
+        textView=view.findViewById(R.id.tv_phone);
+        textView.setText(path.getPhone());
+
+        TextView carriageTv=view.findViewById(R.id.tv_carriage);
+        carriageTv.setText(Utils.formatBalance(path.getPrice()));
+
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(mContext, DriverDetailActivity.class);
-                i.putExtra(DriverDetailActivity.EXTRA_NICK_NAME,user.getNickName());
-                i.putExtra(DriverDetailActivity.EXTRA_PHONE,user.getPhone());
-                i.putExtra(DriverDetailActivity.EXTRA_ID,user.getId());
-                mContext.startActivity(i);
+                Intent i=new Intent(mActivity, DriverDetailActivity.class);
+                i.putExtra(DriverDetailActivity.EXTRA_NICK_NAME,path.getNickName());
+                i.putExtra(DriverDetailActivity.EXTRA_PHONE,path.getPhone());
+                i.putExtra(DriverDetailActivity.EXTRA_ID,path.getId());
+                mActivity.startActivityForResult(i,1);
             }
         });
     }
