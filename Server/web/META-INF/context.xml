@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/">
+    <Resource name="jdbc"
+              auth="Container"
+              type="javax.sql.DataSource" driverClassName="com.mysql.cj.jdbc.Driver"
+              url="jdbc:mysql://localhost:3306/didi?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;useSSL=false"
+              maxActive="20"
+              maxIdle="10"
+              maxWait="3000"
+              username="zzl" password="Zzl123456"/>
+    <!--maxActive:数据库连接池中最大连接数，0表示无限制  -->
+    <!--maxIdle连接池处于空闲状态的数据库连接的最大数目，取0表示不受限制-->
+    <!--maxWait最大等待连接时间，若超出此时间则出现异常，-1表示无限制 -->
+</Context>
